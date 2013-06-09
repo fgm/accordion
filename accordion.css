@@ -27,6 +27,7 @@ body {
 .accordion-header {
   background-color: #eee;
   color: black;
+  cursor: pointer;
   font-weight: normal;
 }
 

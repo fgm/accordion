@@ -92,7 +92,7 @@ function accordionPaneOpenAll($) {
 function accordionPaneSynchronize($) {
   "use strict";
   accordionPaneCloseAll($);
-  $('.accordion-item.accordion-active').parent().removeClass('accordion-pane-closed');
+  $('.accordion-item.accordion-active').parentsUntil('.accordion').removeClass('accordion-pane-closed');
 }
 
 /**
@@ -158,7 +158,7 @@ function accordionItemSetHeaderActive(item) {
 function accordionInitClasses($) {
   "use strict";
   $('.accordion>h2').addClass('accordion-header');
-  $('.accordion>ul').addClass('accordion-pane');
+  $('.accordion ul').addClass('accordion-pane');
   $('.accordion-pane>li').addClass('accordion-item');
 }
 

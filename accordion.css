@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+/* Base */
+body {
+  background-color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* Layout */
+
+/* Module */
+.accordion {
+  display: block;
+}
+.accordion-header {
+  margin: 0;  
+}
+.accordion-pane {
+  margin: 0;
+}
+/* State */
+.accordion-pane-closed {
+  display: none;
+}
+
+/* Theme */
+.accordion-header {
+  background-color: #eee;
+  color: black;
+  font-weight: normal;
+}
+
+.accordion-item {
+  background-color: white;
+  color: black;
+  font-weight: normal;
+}
+
+.accordion-active {
+  font-weight: bold;
+}

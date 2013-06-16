@@ -39,3 +39,19 @@ that class on the initial HTML, the first item of the first header will be set
 active.
 
 Although this is not recommended, multiple `<ul>` may be used for a given pane.
+
+## Running tests
+
+Tests are written for Jasmine 1.3.1 and demonstrate both the expected structure
+and use of the Accordion methods.
+
+- Download Jasmine somewhere like `lib/jasmine-1.3.1/jasmine*`
+- Symlink lib/Jasmine to the Jasmine directory, like
+   `ln -s lib/jasmine-1.3.1 lib/Jasmine`
+- Download jQuery somewhere, somewhere like `lib/jQuery/jquery.1.10.1.js` 
+- Symlink lib/jQuery to the jQuery file, like 
+    `ln -s lib/jQuery/jquery.1.10.1.js lib/jQuery.js`
+- Browse to `SpecRunner.html`
+- Jasmine results should display. If they don't check for errors in your browser
+  console log.
+

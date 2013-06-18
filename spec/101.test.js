@@ -5,7 +5,7 @@ describe("Jasmine 101", function() {
 });
 
 
-describe('Accordion init', function () {
+describe('Accordion.initClasses()', function () {
   var $;
   var backup;
   var root = '.accordion';
@@ -23,7 +23,7 @@ describe('Accordion init', function () {
 
   // This test checks initClasses() for headers.
   it('Should contain exactly one active header.', function () {
-    expect($('h2.accordion-active').length).toBe(1);
+    expect($(root + ' h2.accordion-active').length).toBe(0);
   });
   it('Should have tagged all its headers and only them', function () {
     expected = $(root + ' h2').length;
@@ -40,6 +40,6 @@ describe('Accordion init', function () {
 
   // This test checks initClasses() for items.
   it('Should contain exactly one active item.', function () {
-    expect($('li.accordion-active').length).toBe(1);
+    expect($(root + ' li.accordion-active').length).toBe(1);
   });
 });

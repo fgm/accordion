@@ -24,6 +24,12 @@ body {
 }
 
 /* Theme */
+.accordion-error {
+  background-color: #f44;
+  color: #fff;
+  padding: 1em;
+}
+
 .accordion-header {
   background-color: #eee;
   color: black;

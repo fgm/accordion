@@ -9,19 +9,84 @@
  * Licensed under the General Public License version 2 and later.
  */
 
-/* jshint bitwise:true, browser:true, curly:true, eqeqeq:true, expr:true, forin:true, latedef: true, newcap: true, noarg:true, noempty:true, strict:true, trailing: true, undef:true, unused:true, jquery:true */
+/* jshint bitwise:true, browser:true, curly:true, eqeqeq:true, expr:true, forin:true, latedef: true, newcap: true, noarg:true, noempty:true, strict:true, trailing: true, undef:true, unused:true */
 
-/* Only define exports for CommonJS-inspired environments, like Node. Browsers
- * load all script globals anyway.
- */
-var isCommonJS = (typeof window == 'undefined') && (typeof exports == 'object');
 var accordion = {};
-if (isCommonJS) {
-  exports.accordion = accordion;
-}
 
 /**
- * Mark an accordion item as active and remove mark from all other items.
+ * Retrieve panes associated with a header.
+ *
+ * @param header
+ *   A jQuery object targeting a single accordion header.
+ *
+ * @return
+ *   A jQuery object list targeting the panes associated to the header.
+ */
+accordion.headerGetPanes = function (header) {
+  "use strict";
+  var ret;
+
+  if (!header.hasClass('accordion-header')) {
+    throw "Accordion: headerGetPanes() parameter is not an Accordion header.";
+  }
+  ret = header.nextUntil('.accordion-header');
+  return ret;
+};
+
+/**
+ * Does any of the panes below the header contain the active item ?
+ *
+ * @param header
+ *
+ * @return boolean
+ */
+accordion.headerIsActive = function (header) {
+  "use strict";
+  var ret = this.headerGetPanes(header).hasClass('.accordion-pane-closed');
+  return ret;
+};
+
+/**
+ * Open the header for the chosen the item.
+ *
+ * @param item
+ *   The jQuery wrappper for one or more items. If several are passed, only the
+ *   first will be considered.
+ *
+ * @return
+ *   The jQuery wrapper for the modified header.
+ */
+accordion.headerOpen = function (item) {
+  "use strict";
+  var header;
+  var panes;
+  var ret;
+
+  // Ignore any item beyond the first.
+  item = item.first();
+  header = this.itemGetHeader(item);
+  panes = this.headerGetPanes(header);
+  ret = this.paneOpen(panes);
+  return ret;
+};
+
+/**
+ * Retrieve the header for the chosen item.
+ *
+ * @param item
+ *
+ * @return jQuery
+ */
+accordion.itemGetHeader = function (item) {
+  "use strict";
+  var ret;
+
+  ret = item.parent().prev('.accordion-header');
+  return ret;
+};
+
+/**
+ * Mark an accordion item as active and remove active status from all others.
  *
  * @param item
  *   jQuery wrapper for the item on which to set active status.
@@ -35,126 +100,22 @@ accordion.itemSetActive = function (item) {
     find('.accordion-active').
     removeClass('accordion-active');
   item.addClass('accordion-active');
+  return item;
 };
 
 /**
- * Make the first item for a given the one and only active item.
+ * Initialize Accordion.
  *
- * @param header
- *
- * @return The jQuery wrapper for the now active item.
+ * @param $
+ *   jQuery
  */
-accordion.headerSetFirstItemActive = function (header) {
+accordion.init = function ($) {
   "use strict";
-  var active_item;
-
-  active_item = header.
-    next().
-    find('.accordion-item').
-    first();
-  this.itemSetActive(active_item);
-
-  return active_item;
+  this.$ = $;
+  this.initClasses();
+  this.initHandlers();
+  this.initState();
 };
-
-/**
- * Close all panes in the Accordion.
- *
- * @return The jQuery wrapper for the closed panes.
- */
-accordion.paneCloseAll = function () {
-  "use strict";
-  var ret = this.$('.accordion-header').
-    nextUntil('.accordion-header').
-    addClass('accordion-pane-closed');
-
-  return ret;
-};
-
-/**
- * Open all panes in the Accordion.
- *
- * This function is only a development helper: in normal operation, exactly one
- * pane is opened at any time.
- *
- * @return The jQuery wrapper for the opened panes.
- */
-
-accordion.paneOpenAll = function() {
-  "use strict";
-  var ret = this.$('.accordion-header').
-    nextUntil('.accordion-header').
-    removeClass('accordion-pane-closed');
-
-  return ret;
-};
-
-/**
- * Synchronize the pane state with the active classes.
- *
- * - Close all panes
- * - Reopen the pane containing the active item.
- */
-accordion.paneSynchronize = function () {
-  "use strict";
-  this.paneCloseAll();
-  this.$('.accordion-item.accordion-active').
-    parentsUntil('.accordion').
-    removeClass('accordion-pane-closed');
-};
-
-/**
- * Click handler for headers.
- *
- * Mark the first item in the associated pane as active and all others as
- * inactive.
- *
- * @param event
- *   The jQuery Event object
- *
- * @return void
- */
-accordion.headerClick = function (event) {
-  "use strict";
-  var header;
-
-  header = this.$(event.target);
-  if (!header.hasClass('accordion-active')) {
-    accordion.headerSetFirstItemActive(header);
-    accordion.paneSynchronize($);
-  }
-};
-
-/**
- * Set the header active state based on the item active state.
- *
- * @param item
- *   The jQuery wrappper for one or more items. If several are passed, only the
- *   first will be considered.
- *
- * @return
- *   The jQuery wrapper for the modified header.
- */
-accordion.itemSetHeaderActive = function (item) {
-  "use strict";
-  var active_class = 'accordion-active';
-  var parent;
-
-  item = item.first();
-  parent = item.
-    parent().
-    prevAll('.accordion-header').
-    first();
-
-  if (item.hasClass(active_class)) {
-    parent.addClass(active_class);
-  }
-  else {
-    parent.removeClass(active_class);
-  }
-
-  return parent;
-}
 
 /**
  * Add accordion class to each header, list and list item.
@@ -171,15 +132,12 @@ accordion.initClasses = function () {
 /**
  * Add click handler to each header and list item.
  *
- * @param $
- *   jQuery
- *
  * @return void
  */
 accordion.initHandlers = function () {
   "use strict";
   this.$('.accordion-header').click(function (event) {
-    accordion.headerClick(event);
+    accordion.onHeaderClick(event);
   });
 };
 
@@ -195,14 +153,15 @@ accordion.initHandlers = function () {
  */
 accordion.initState = function () {
   "use strict";
-  var active_items = this.$('.accordion-item.accordion-active');
+  var active_selector = '.accordion-item.accordion-active';
+  var initial_active_items = this.$(active_selector);
+  var active_item;
+  var ret;
 
-  switch (active_items.length) {
+  switch (initial_active_items.length) {
     case 0:
       // No active item, activate the first item.
-      this.$('.accordion-item').
-        first().
-        addClass('accordion-active');
+      this.$('.accordion-item').first().addClass('accordion-active');
       break;
 
     case 1:
@@ -211,65 +170,115 @@ accordion.initState = function () {
 
     default:
       // Multiple active items, remove all but the first.
-      active_items.slice(1).
-        removeClass('accordion-active');
+      initial_active_items.slice(1).removeClass('accordion-active');
       break;
   }
 
-  var ret = this.itemSetHeaderActive(this.$('.accordion-item.accordion-active'));
-  this.paneSynchronize();
+  active_item = this.$(active_selector);
+  this.paneCloseAll();
+  ret = this.headerOpen(active_item);
   return ret;
 };
 
 /**
- * Initialize Accordion.
+ * Click handler for headers.
+ *
+ * Mark the first item in the associated pane as active and all others as
+ * inactive.
+ *
+ * @param event
+ *   The jQuery Event object
+ *
+ * @return void
  */
-accordion.init = function ($) {
+accordion.onHeaderClick = function (event) {
   "use strict";
-  this.$ = $;
-  this.initClasses();
-  this.initHandlers();
-  this.initState();
+  var header;
+
+  header = this.$(event.target);
+  if (!this.headerIsActive(header)) {
+    this.paneCloseAll();
+    this.headerGetPanes(header).removeClass('accordion-pane-closed');
+  }
 };
 
 /**
- * Setup Accordion on document ready.
+ * Close all panes in the passed jQuery list.
+ *
+ * @param panes
+ *
+ * @return
+ *   The jQuery wrapper for the closed panes.
  */
-if (typeof document == 'undefined') {
-  document = { };
+accordion.paneClose = function(panes) {
+  "use strict";
+  var ret = panes.addClass('accordion-pane-closed');
+  return ret;
+};
+
+/**
+ * Close all panes in the Accordion.
+ *
+ * @return
+ *   The jQuery wrapper for the closed panes.
+ */
+accordion.paneCloseAll = function () {
+  "use strict";
+  var panes;
+  var ret;
+
+  panes = this.$('.accordion-header').
+    nextUntil('.accordion-header');
+  ret = this.paneClose(panes);
+  return ret;
+};
+
+/**
+ * Open all panes in the passed jQuery list.
+ *
+ * @param panes
+ *
+ * @return
+ *   The jQuery wrapper for the opened panes.
+ */
+accordion.paneOpen = function (panes) {
+  "use strict";
+  var ret = panes.removeClass('accordion-pane-closed');
+  return ret;
+};
+
+/**
+ * Open all panes in the Accordion.
+ *
+ * This function is only a development helper: in normal operation, exactly one
+ * pane is opened at any time.
+ *
+ * @return The jQuery wrapper for the opened panes.
+ */
+accordion.paneOpenAll = function() {
+  "use strict";
+  var panes;
+  var ret;
+
+  panes = this.$('.accordion-header').
+    nextUntil('.accordion-header');
+  ret = this.paneOpen(panes);
+  return ret;
+};
+
+/**
+ * Setup Accordion on document ready, checking for a browser and jQuery.
+ */
+if (typeof jQuery === 'undefined') {
+  throw "Accordion depends on jQuery.";
 }
 
-if (typeof jQuery == 'undefined') {
-  var jQuery = function (document_arg) {
-    var fake = function () { return this; };
-    var fakeNames = [
-      'addClass', 'removeClass', 'hasClass',
-      'first', 'parent', 'parentsUntil', 'prevAll', 'nextUntil',
-      'click',
-      'slice'
-    ];
-
-    for (name in fakeNames) {
-      jQuery.prototype[fakeNames[name]] = fake;
-    }
-
-    // Can't just fake ready().
-    jQuery.prototype.ready = function ready(onReady) {
-      if (typeof onReady != 'undefined') {
-        onReady();
-      }
-      return this;
-    };
-
-    return jQuery.prototype;
-  };
-}
-
-if (typeof jQuery != 'undefined') {
-  (function ($) {
-    "use strict";
-    $(document).ready(function () {
-      accordion.init($);
-    });
-  })(jQuery);
-}
+(function ($) {
+  "use strict";
+  if (typeof document === 'undefined') {
+    throw "Accordion is for browsers";
+  }
+  $(document).ready(function () {
+    accordion.init($);
+  });
+})(jQuery);

@@ -81,7 +81,7 @@ accordion.itemGetHeader = function (item) {
   "use strict";
   var ret;
 
-  ret = item.parent().prev('.accordion-header');
+  ret = item.parentsUntil('.accordion').last().prev('.accordion-header');
   return ret;
 };
 

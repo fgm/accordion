@@ -29,9 +29,10 @@ The expected structure is something like:
       <ul>...
       </whatever>
   
-Other structures can be used, but initialy Accordion classes assignments have to
-be performed manually. See `accordionInitClasses()` for an example. Once classes
-are set, Accordion only relies on its classes, not on the actual element types.
+The `ul` element can be wrapped in a `div`. Other structures can be used, but
+initially Accordion classes assignments have to be performed manually. See
+`accordionInitClasses()` for an example. Once classes are set, Accordion only
+relies on its classes, not on the actual element types.
 
 At most one item may have the `accordion-active` class at the same time. Its
 associated header will automatically considered active too. If no item carries

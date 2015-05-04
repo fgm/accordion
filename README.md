@@ -56,3 +56,7 @@ and use of the Accordion methods.
 - Jasmine results should display. If they don't check for errors in your browser
   console log.
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/FGM/accordion/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

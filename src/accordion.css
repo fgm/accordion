@@ -1,48 +1,43 @@
 @CHARSET "UTF-8";
 
-/* Base */
-body {
-  background-color: white;
-  font-family: Arial, sans-serif;
+.accordion {
+  font-size: calc(16rem/24);
 }
 
-/* Layout */
+.accordion dt {
+  background-color: lightslategray;
+  border-left: calc(10em / 24) solid darkslategrey;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 0.25em;
+  padding: 0 0.5em;
+}
 
-/* Module */
-.accordion {
+.accordion dd {
+  display: none;
+  margin-inline-start: 0;
+}
+
+.accordion dd.open {
   display: block;
 }
-.accordion-header {
-  margin: 0;  
-}
-.accordion-pane {
-  margin: 0;
-}
-/* State */
-.accordion-pane-closed {
-  display: none;
+
+.accordion a:any-link,
+.accordion dd.open.active {
+  display: block;
+  padding-bottom: 0.125em;
+  padding-left: calc(0.75em + 10px);
+  padding-top: 0.125em;
+  text-decoration: none;
 }
 
-/* Theme */
-.accordion-error {
-  background-color: #f44;
-  color: #fff;
-  padding: 1em;
+.accordion dd.active,
+.accordion a:any-link:hover {
+  background-color: orange;
+  color: white;
 }
 
-.accordion-header {
-  background-color: #eee;
+.accordion dd.active:hover {
   color: black;
-  cursor: pointer;
-  font-weight: normal;
-}
-
-.accordion-item {
-  background-color: white;
-  color: black;
-  font-weight: normal;
-}
-
-.accordion-active {
-  font-weight: bold;
 }

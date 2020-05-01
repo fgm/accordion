@@ -1,62 +1,52 @@
 # accordion
 
-A tiny jQuery Accordion library. 
+A tiny VanillaJS Accordion library. 
 
-Should work on 1.4 <= jQuery <= 1.10.
+Should work on all current 2020 browsers.
+
 
 ## Usage
 
-- Load jQuery in your page
-- Load `accordion.js` in your page
-- Link to `accordion.css` in your page
+- Prepare your markup as a plain HTML Definition List with class `accordion`.
+- Link your version of `accordion.css` to it, adjusting as needed.
+- Load `domready.js` and `accordion.js` in your page, or use your own `DOMready`
+  library
+- Instantiate the accordion as:
 
-In this initial version, only a single Accordion will work on any given page.
-Behavior with multiple `.accordion` elements is undefined and likely broken.
+```ecmascript 6
+domReady(() => {
+  const el = new WofAccordion(window);
+  if (!el.isValid) {
+    return;
+  }
+  window.wofAccordion = el; // Optional: convenient for debug.
+});
+```
+
+Only a single Accordion will work on any given page.
+
 
 ## Markup
 
-Accordion uses self-contained classes: all begin with "accordion".
+Accordion uses a smaller set of classes than its previous versions.
 
-The expected structure is something like:
+The expected structure is a plain HTML Definition List with class `accordion`:
 
-    <whatever class='accordion'>
-      <h2>pane header</h2>
-      <ul>
-        <li>pane item</li>
-        <li class='accordion-active'>pane item</li>
-        </ul>
-      <h2>...
-      <ul>...
-      </whatever>
+    <dl class="accordion">
+      <dt>pane header</dt>
+      <dd><a href="#">pane item</a></dd>
+      <dd class="active">pane item</dd>
+      
+      <dt>...
+      <dd>...
+    </dl>
   
-The `ul` element can be wrapped in a `div`. Other structures can be used, but
-initially Accordion classes assignments have to be performed manually. See
-`accordionInitClasses()` for an example. Once classes are set, Accordion only
-relies on its classes, not on the actual element types.
-
-At most one item may have the `accordion-active` class at the same time. Its
-associated header will automatically considered active too. If no item carries
-that class on the initial HTML, the first item of the first header will be set
-active.
-
-Although this is not recommended, multiple `<ul>` may be used for a given pane.
-
-## Running tests
-
-Tests are written for Jasmine 1.3.1 and demonstrate both the expected structure
-and use of the Accordion methods.
-
-- Download Jasmine somewhere like `lib/jasmine-1.3.1/jasmine*`
-- Symlink lib/Jasmine to the Jasmine directory, like
-   `ln -s lib/jasmine-1.3.1 lib/Jasmine`
-- Download jQuery somewhere, somewhere like `lib/jQuery/jquery.1.10.1.js` 
-- Symlink lib/jQuery to the jQuery file, like 
-    `ln -s lib/jQuery/jquery.1.10.1.js lib/jQuery.js`
-- Browse to `SpecRunner.html`
-- Jasmine results should display. If they don't check for errors in your browser
-  console log.
+At most one item may have the `accordion-active` class at the same time, and
+should not contain a link, as it represents the current page.
 
 
+## Changes
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/FGM/accordion/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+- New version uses vanilla JS, no longer depending on jQuery.
+- New version is 4 times smaller the the jQuery version, not even counting jQuery
+  itself.
